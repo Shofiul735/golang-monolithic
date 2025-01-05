@@ -19,6 +19,9 @@ func NewUserRepository(db *database.DB) *UserRepository {
 }
 
 func (r *UserRepository) Create(ctx context.Context, user *domain.User) error {
+	ctx, cancel := context.WithTimeout(ctx, 3*time.Second)
+	defer cancel()
+
 	query := `
         INSERT INTO users (id, email, password, created_at, updated_at)
         VALUES ($1, $2, $3, $4, $5)
@@ -53,6 +56,9 @@ func (r *UserRepository) Create(ctx context.Context, user *domain.User) error {
 }
 
 func (r *UserRepository) GetByID(ctx context.Context, id string) (*domain.User, error) {
+	ctx, cancel := context.WithTimeout(ctx, 3*time.Second)
+	defer cancel()
+
 	query := `
         SELECT id, email, password, created_at, updated_at
         FROM users
@@ -78,6 +84,9 @@ func (r *UserRepository) GetByID(ctx context.Context, id string) (*domain.User, 
 }
 
 func (r *UserRepository) ExistsByEmail(ctx context.Context, email string) (bool, error) {
+	ctx, cancel := context.WithTimeout(ctx, 3*time.Second)
+	defer cancel()
+
 	query := `SELECT EXISTS(SELECT 1 FROM users WHERE email = $1)`
 
 	var exists bool
@@ -90,6 +99,9 @@ func (r *UserRepository) ExistsByEmail(ctx context.Context, email string) (bool,
 }
 
 func (r *UserRepository) Update(ctx context.Context, user *domain.User) error {
+	ctx, cancel := context.WithTimeout(ctx, 3*time.Second)
+	defer cancel()
+
 	query := `
         UPDATE users
         SET email = $1,
@@ -121,6 +133,9 @@ func (r *UserRepository) Update(ctx context.Context, user *domain.User) error {
 }
 
 func (r *UserRepository) Delete(ctx context.Context, id string) error {
+	ctx, cancel := context.WithTimeout(ctx, 3*time.Second)
+	defer cancel()
+
 	query := `DELETE FROM users WHERE id = $1`
 
 	result, err := r.db.ExecContext(ctx, query, id)
@@ -139,6 +154,9 @@ func (r *UserRepository) Delete(ctx context.Context, id string) error {
 // Additional helper methods
 
 func (r *UserRepository) GetByEmail(ctx context.Context, email string) (*domain.User, error) {
+	ctx, cancel := context.WithTimeout(ctx, 3*time.Second)
+	defer cancel()
+
 	query := `
         SELECT id, email, password, created_at, updated_at
         FROM users
