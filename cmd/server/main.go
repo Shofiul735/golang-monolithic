@@ -17,6 +17,7 @@ import (
 	"example.com/monolithic/internal/handlers"
 	custommw "example.com/monolithic/internal/middleware"
 	"example.com/monolithic/internal/platform/database"
+	"example.com/monolithic/internal/platform/database/migrations"
 	"example.com/monolithic/internal/repositories"
 )
 
@@ -57,6 +58,11 @@ func main() {
 		logger.Fatalf("Database health check failed: %v", err)
 	}
 	logger.Println("Successfully connected to database")
+
+	// Run db migrations
+	if err := migrations.RunMigrations(dbConfig.GetConnectionURL()); err != nil {
+		log.Fatalf("Failed to run migrations: %v", err)
+	}
 
 	// Initialize repositories
 	userRepo := repositories.NewUserRepository(db)
